@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>汽车配件</title>
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+</head>
+<body>
+<table id="demo" lay-filter="test"></table>
+<!--工具条-->
+<script type="text/html" id="currentTableBar">
+    <!--    <a class="layui-btn layui-btn-xs " lay-event="edit">修改</a>-->
+    <!--    <a class="layui-btn layui-btn-danger layui-btn-xs " lay-event="del">删除</a>-->
+    <button type="button" class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">
+        <i class="layui-icon">&#xe642;</i>
+    </button>
+    <button type="button" class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del">
+        <i class="layui-icon">&#xe640;</i>
+    </button>
+</script>
+<script src="/layui/layui.js"></script>
+<script th:inline="none">
+    layui.use('table', function () {
+        var $ = layui.jquery;
+        var table = layui.table;
+
+        //数据表格展示数据
+        table.render({
+            elem: '#demo'
+            // , height: 472
+            , url: 'selectPartsTypeByCondition' //数据接口
+            , page: true //开启分页
+            , cols: [[ //表头
+                {type: "checkbox", width: 50, fixed: "left", align: "center"}
+                , {type: 'numbers', title: '序号', sort: true, width: 50, align: "center"}
+                , {field: 'id', title: 'ID', width: 80, sort: true, align: "center", hide: true}
+                , {field: 'name', title: '配件类型', sort: true, align: "center"}
+                , {title: '操作', width: 150, templet: '#currentTableBar', fixed: "right", align: "center"}
+            ]],
+            limit: 10,
+            limits: [10, 20, 30],
+            response: {statusCode: 0},
+            parseData: function (res) {
+                return {
+                    "code": 0, //解析接口状态
+                    "msg": "", //解析提示文本
+                    "count": res.total, //解析数据长度
+                    "data": res.records //解析数据列表
+                }
+            }
+        });
+        //监听工具条删除修改操作
+        table.on('tool(test)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+
+            if (layEvent === 'del') { //删除
+                layer.confirm('确定删除这一行数据嘛', function (index) {
+                    // obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                    layer.close(index);
+                    //向服务端发送删除指令
+                    //发送删除命令
+                    $.ajax({
+                        url: "/deletePartsType",
+                        data: {"id": data.id},
+                        success: function (res) {
+                            layer.alert(res.extend.msg)
+                        },
+                        error: function () {
+                            layer.alert("出错啦");
+                        }
+                    })
+                    table.reload('demo', {
+                        url: '/selectPartsTypeByCondition',
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        }
+                    }); //只重载数据
+                });
+            } else if (layEvent === 'edit') { //编辑
+                layer.open({
+                    type: 2,
+                    content: ['/toPartsTypeUpdate', "no"],//跳转到添加用户页面，你还可以content: ['http://sentsin.com', 'no']
+                    area: ['460px', '250px'],
+                    //弹出动画
+                    anim: 1,
+                    //关闭按钮样式
+                    closeBtn: 2,
+                    success: function (layero, index) {
+                        var iframe = window['layui-layer-iframe' + index];
+                        //调用子页面的全局函数
+                        iframe.child(data)
+                    },
+                    end: function () {
+                        //do something
+                        table.reload('demo', {
+                            url: '/selectPartsTypeByCondition',
+                            page: {
+                                curr: 1 //重新从第 1 页开始
+                            }
+                        }); //只重载数据
+                    }
+                });
+
+                //同步更新缓存对应的值
+                obj.update({
+                    username: '123'
+                    , title: 'xxx'
+                });
+            }else if (layEvent === 'add') { //编辑
+                layer.open({
+                    type: 2,
+                    content: ['/toShopAddImg', "no"],//跳转到添加用户页面，你还可以content: ['http://sentsin.com', 'no']
+                    area: ['460px', '250px'],
+                    //弹出动画
+                    anim: 1,
+                    //关闭按钮样式
+                    closeBtn: 2,
+                    success: function (layero, index) {
+                        var iframe = window['layui-layer-iframe' + index];
+                        //调用子页面的全局函数
+                        iframe.child(data)
+                    },
+                    end: function () {
+                        //do something
+                        table.reload('demo', {
+                            url: '/getShop',
+                            page: {
+                                curr: 1 //重新从第 1 页开始
+                            }
+                        }); //只重载数据
+                    }
+                });
+            }
+            else {
+                layer.close(index);
+            }
+        });
+
+
+    });
+
+</script>
+</body>
+</html>

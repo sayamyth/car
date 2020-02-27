@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>汽车配件类型添加</title>
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+    <script src="/layui/layui.js"></script>
+</head>
+<body>
+<form class="layui-form" >
+    <div class="layui-form-item">
+        <label class="layui-form-label">配件类型</label>
+        <div class="layui-input-inline">
+            <input type="text" id="name" name="name" required lay-verify="required" placeholder="配件类型"
+                   autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+        </div>
+    </div>
+</form>
+
+<script src="/layui/layui.js"></script>
+<script th:inline="none">
+
+    layui.use(['form','layer'], function(){
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+        //监听修改用户提交
+        form.on('submit(formDemo)', function(){
+            var data= $("#name").val();
+            $.ajax({
+                url:"savePartsType?name="+data,
+                success:function (res) {
+                    layer.msg(res.extend.msg);
+                    var index = parent.layer.getFrameIndex(window.name);
+                    setTimeout(function () {
+                        parent.layer.close(index);//关闭当前页
+                    }, 1000)
+                },
+                error:function () {
+                    layer.msg("出错了");
+                    var index = parent.layer.getFrameIndex(window.name);
+                    setTimeout(function () {
+                        parent.layer.close(index);//关闭当前页
+                    }, 1000)
+                }
+            })
+            return false;
+        });
+
+
+    });
+
+</script>
+</body>
+</html>

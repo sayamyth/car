@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>顾客信息表</title>
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+    <script src="/js/jquery-1.8.3.min.js"></script>
+</head>
+<style>
+    img{
+        width: 200px;
+        height: 120px;
+    }
+    .l{
+        text-align: center;
+        margin: 0 auto;
+    }
+    .test1{
+        position: absolute;
+        right: 0px;
+        bottom: 0px;
+    }
+</style>
+<body>
+<input id="input1" style="width: 200px;height: 30px;margin-left: 50px" type="text" name="tiltle" placeholder="输入配件名查询">
+<button id="selectByLike" class="layui-btn layui-btn-normal"><i class="layui-icon">&#xe615;</i>查找</button>
+
+
+<div class="layui-fluid">
+    <div class="layui-row" id="all">
+<!--        <div class="layui-col-md3">-->
+<!--            <img src="">-->
+<!--            <p name="partsName"></p>-->
+<!--            <p name="partsPrice"></p>-->
+<!--            <p name="partsDesc"></p>-->
+<!--        </div>-->
+    </div>
+</div>
+<!--此为上下翻页-->
+<div id="test1" class="test1"></div>
+
+<script src="/layui/layui.js"></script>
+<script>
+    function partsAdd(id) {
+        alert("666")
+        $.ajax({
+            url:"shopCartAdd",
+            data:{"id":id},
+            success:function (res) {
+                alert(res.extend.msg)
+            },
+            error:function () {
+              alert(111)
+            }
+        })
+    }
+</script>
+<script th:inline="none">
+    layui.use(['laypage', 'jquery'], function () {
+        var $ = layui.jquery;
+        var laypage = layui.laypage;
+
+//配件详情列表
+        function partsDetalis() {
+            layer.open({
+                type: 2,
+                content: ['/toShopUpdate', "no"],//跳转到添加用户页面，你还可以content: ['http://sentsin.com', 'no']
+                area: ['460px', '250px'],
+                //弹出动画
+                anim: 1,
+                //关闭按钮样式
+                closeBtn: 2,
+                success: function (layero, index) {
+                    var iframe = window['layui-layer-iframe' + index];
+                    //调用子页面的全局函数
+                    iframe.child(data)
+                },
+                end: function () {
+                    //do something
+                    table.reload('demo', {
+                        url: '/getShop',
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        }
+                    }); //只重载数据
+                }
+            });
+        }
+        function getList(page,limit){
+            $("#all").empty();
+            $.ajax({
+                url: "getPartsWithPageAndCondition",
+                data:{"page":page,"limit":limit},
+                success: function (res) {
+                    for (var i = 0; i < res.records.length; i++){
+                        var id=$("<p hidden>"+res.records[i].id+"</p>");
+                        var img=$("<img src="+res.records[i].partsImg+">");
+                        var partsName=$("<p>配件名："+res.records[i].partsName+"</p>");
+                        var partsPrice=$("<p>价格："+res.records[i].partsPrice+"</p>");
+                        var partsDesc=$("<p>商品描述："+res.records[i].partsDesc+"</p>");
+                        var btn = $("<button class=\"layui-btn layui-btn-sm\" onclick='partsAdd("+res.records[i].id+")'>加入购物车</button>")
+                        var div=$("<div class='layui-col-md2 l'></div>").append(id,img,partsName,partsPrice,partsDesc,btn);
+                        div.appendTo($("#all"));
+                    }
+                }
+            })
+        }
+
+        $.ajax({
+            url: "getPartsWithPageAndCondition",
+            success: function (res) {
+                for (var i = 0; i < res.records.length; i++){
+                    var id=$("<p hidden>"+res.records[i].id+"</p>");
+                    var img=$("<img src="+res.records[i].partsImg+">");
+                    var partsName=$("<p>"+res.records[i].partsName+"</p>");
+                    var partsPrice=$("<p>"+res.records[i].partsPrice+"</p>");
+                    var partsDesc=$("<p>"+res.records[i].partsDesc+"</p>");
+                    var btn = $("<button class='layui-btn layui-btn-sm' onclick='partsAdd("+res.records[i].id+")'>加入购物车</button>")
+                    var div=$("<div class='layui-col-md2 l'></div>").append(id,img,partsName,partsPrice,partsDesc,btn);
+                    // $("#t").appendTo(div);
+                    div.appendTo($("#all"));
+                }
+                //执行一个laypage实例
+                laypage.render({
+                    elem: 'test1',//注意，这里的 test1 是 ID，不用加 # 号
+                    count: res.total, //数据总数，从服务端得到
+                    jump: function(obj, first){
+                        //obj包含了当前分页的所有参数，比如：
+                        console.log(obj.curr); //得到当前页，以便向服务端请求对应页的数据。
+                        console.log(obj.limit); //得到每页显示的条数
+                        var page=obj.curr;
+                        var limit=obj.limit;
+                        getList(page,limit);
+                        //首次不执行
+                        if(!first){
+                            //do something
+                        }}
+                });
+            }
+        })
+
+
+    });
+</script>
+</body>
+</html>

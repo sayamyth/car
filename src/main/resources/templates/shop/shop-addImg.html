@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>店铺添加</title>
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+    <script src="/layui/layui.js"></script>
+</head>
+<body>
+<form class="layui-form" method="post" enctype="multipart/form-data" action="saveShopImg">
+    <!--店铺名-->
+    <input name="id">
+    <input name="shopImg" type="file">
+    <!--    店铺图片-->
+<!--    <div class="layui-form-item">-->
+<!--        <label class="layui-form-label">店铺图片</label>-->
+<!--        <div class="layui-input-inline">-->
+<!--            <input type="file" name="shopImg" required lay-verify="required" placeholder="店铺图片"-->
+<!--                   autocomplete="off" class="layui-input">-->
+<!--        </div>-->
+<!--    </div>-->
+    <input type="submit" value="上传">
+</form>
+
+<script src="/layui/layui.js"></script>
+<script th:inline="none">
+    function child(data) {
+        layui.use(['form','layer'], function() {
+            var $ = layui.jquery;
+            var layer = layui.layer;
+            var form = layui.form;
+
+            console.log(data)
+            $('input[name="id"]').attr("value",data.id);
+            form.render();
+        })
+
+    }
+    layui.use(['form','layer'], function(){
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+
+
+        //监听修改用户提交
+        // form.on('submit(formDemo)', function(data){
+        //     alert(666)
+        //     $.ajax({
+        //         url:"saveShop",
+        //         data:data.field,
+        //         accept: 'file',
+        //         success:function (res) {
+        //             layer.msg(res.extend.msg);
+        //             var index = parent.layer.getFrameIndex(window.name);
+        //             setTimeout(function () {
+        //                 parent.layer.close(index);//关闭当前页
+        //             }, 1000)
+        //         },
+        //         error:function () {
+        //             layer.msg("出错了");
+        //             var index = parent.layer.getFrameIndex(window.name);
+        //             setTimeout(function () {
+        //                 parent.layer.close(index);//关闭当前页
+        //             }, 1000)
+        //         }
+        //     })
+        //     return false;
+        // });
+
+
+    });
+
+</script>
+</body>
+</html>

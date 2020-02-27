@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>店铺添加</title>
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+    <script src="/layui/layui.js"></script>
+</head>
+<body>
+<form class="layui-form" >
+    <!--店铺名-->
+    <div class="layui-form-item">
+        <label class="layui-form-label">店铺名</label>
+        <div class="layui-input-inline">
+            <input type="text" name="shopName" required lay-verify="required" placeholder="店铺名"
+                   autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <!--    店铺联系方式-->
+    <div class="layui-form-item">
+        <label class="layui-form-label">联系方式</label>
+        <div class="layui-input-inline">
+            <input type="text" name="shopPhone" required lay-verify="required" placeholder="联系方式"
+                   autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <!--    店铺描述-->
+    <div class="layui-form-item">
+        <label class="layui-form-label">店铺描述</label>
+        <div class="layui-input-inline">
+            <input type="text" name="shopDesc" required lay-verify="required" placeholder="店铺描述"
+                   autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <!--    店铺图片-->
+<!--    <div class="layui-form-item">-->
+<!--        <label class="layui-form-label">店铺图片</label>-->
+<!--        <div class="layui-input-inline">-->
+<!--            <input type="file" name="shopImg" required lay-verify="required" placeholder="店铺图片"-->
+<!--                   autocomplete="off" class="layui-input">-->
+<!--        </div>-->
+<!--    </div>-->
+    <!--    地区选择-->
+    <div class="layui-form-item">
+        <label class="layui-form-label">省</label>
+        <div class="layui-input-inline">
+            <select name="provinces" data-area="广东省" lay-filter="provinces">
+                <option value="">选择省</option>
+                <option>重庆</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">市</label>
+        <div class="layui-input-inline">
+            <select name="city" data-area="广东省" lay-filter="city">
+                <option value="">选择市</option>
+                <option>重庆</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">区县</label>
+        <div class="layui-input-inline">
+            <select name="district" data-area="广东省" lay-filter="district">
+                <option value="">选择区县</option>
+                <option>九龙坡区</option>
+                <option>渝北区</option>
+                <option>江北区</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+        </div>
+    </div>
+    <!--    详细地址-->
+    <div class="layui-form-item">
+        <label class="layui-form-label">详细地址</label>
+        <div class="layui-input-inline">
+            <input type="text" name="shopAddress" required lay-verify="required" placeholder="详细地址"
+                   autocomplete="off" class="layui-input">
+        </div>
+    </div>
+</form>
+
+<script src="/layui/layui.js"></script>
+<script th:inline="none">
+
+    layui.use(['form','layer'], function(){
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+
+
+        //监听修改用户提交
+        form.on('submit(formDemo)', function(data){
+            alert(666)
+            $.ajax({
+                url:"saveShop",
+                data:data.field,
+                accept: 'file',
+                success:function (res) {
+                    layer.msg(res.extend.msg);
+                    var index = parent.layer.getFrameIndex(window.name);
+                    setTimeout(function () {
+                        parent.layer.close(index);//关闭当前页
+                    }, 1000)
+                },
+                error:function () {
+                    layer.msg("出错了");
+                    var index = parent.layer.getFrameIndex(window.name);
+                    setTimeout(function () {
+                        parent.layer.close(index);//关闭当前页
+                    }, 1000)
+                }
+            })
+            return false;
+        });
+
+
+    });
+
+</script>
+</body>
+</html>

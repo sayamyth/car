@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>汽车配件添加</title>
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+    <script src="/layui/layui.js"></script>
+</head>
+<body>
+<form class="layui-form">
+    <div class="layui-form-item">
+        <label class="layui-form-label">配件类型</label>
+        <div class="layui-input-inline">
+            <select id="typeId" name="typeId" lay-verify="">
+
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">配件名称</label>
+        <div class="layui-input-inline">
+            <input type="text" name="partsName" required lay-verify="required" placeholder="配件名称"
+                   autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">生产厂家</label>
+        <div class="layui-input-inline">
+            <input type="text" name="produce" required lay-verify="required" placeholder="生产厂家"
+                   autocomplete="off" class="layui-input">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">配件描述</label>
+        <div class="layui-input-inline">
+            <input type="text" name="partsDesc" required lay-verify="required" placeholder="配件描述"
+                   autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">配件价格</label>
+        <div class="layui-input-inline">
+            <input type="text" name="partsPrice" required lay-verify="required" placeholder="配件价格"
+                   autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">配件折扣</label>
+        <div class="layui-input-inline">
+            <input type="text" name="discount" required lay-verify="required" placeholder="配件折扣"
+                   autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+        </div>
+    </div>
+</form>
+
+<script src="/layui/layui.js"></script>
+
+<script th:inline="none">
+
+    layui.use(['form', 'layer'], function () {
+
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+        // $("#typeId");
+        $.ajax({
+            url: "selectPartsTypeByCondition",
+            success: function (res) {
+                for (var i = 0; i < res.records.length; i++) {
+                    $("#typeId").append("<option value=" + res.records[i].id + ">" + res.records[i].name + "</option>")
+                }
+                form.render();
+            }
+        })
+        //监听修改用户提交
+        form.on('submit(formDemo)', function (data) {
+            $.ajax({
+                url: "saveParts",
+                data: data.field,
+                success: function (res) {
+                    layer.msg(res.extend.msg);
+                    var index = parent.layer.getFrameIndex(window.name);
+                    setTimeout(function () {
+                        parent.layer.close(index);//关闭当前页
+                    }, 1000)
+                },
+                error: function () {
+                    layer.msg("出错了");
+                    var index = parent.layer.getFrameIndex(window.name);
+                    setTimeout(function () {
+                        parent.layer.close(index);//关闭当前页
+                    }, 1000)
+                }
+            })
+            return false;
+        });
+
+
+    });
+
+</script>
+</body>
+</html>

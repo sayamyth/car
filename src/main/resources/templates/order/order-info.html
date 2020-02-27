@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>汽车配件信息修改</title>
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+    <script src="/layui/layui.js"></script>
+</head>
+<body>
+
+<table id="demo" lay-filter="test"></table>
+
+
+<form class="layui-form" action="">
+    <input name="id" id="id" hidden>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">订单状态</label>
+        <div class="layui-input-inline">
+            <div class="layui-input-inline">
+                <input type="text" name="state" disabled lay-verify="required"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">要去的4s店</label>
+        <div class="layui-input-inline">
+            <div class="layui-input-inline">
+                <input type="text" name="shop" disabled lay-verify="required"
+                       autocomplete="off" class="layui-input">
+            </div>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">按钮</label>
+        <div class="layui-input-inline">
+            <div class="layui-input-inline">
+                <button type="button" class="layui-btn" id="surePass">
+                    通过
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+<input name="orderNum" id="orderNum" hidden>
+<input name="shopId" id="shopId" hidden>
+<script th:inline="none">
+    //Demo
+    function child(data) {
+        layui.use(['table','form'], function () {
+            var $ = layui.jquery;
+            var table = layui.table;
+            var form = layui.form;
+            console.log(data)
+            // $('input[name="id"]').attr("value",data.id);
+            $('input[name="state"]').attr("value",data.state)
+            $('input[name="shopId"]').attr("value",data.message)
+            $('input[name="orderNum"]').attr("value",data.orderNum)
+            var orderNum = data.orderNum;
+            //数据表格展示数据
+            table.render({
+                elem: '#demo'
+                // , height: 472
+                , url: 'getOrders?orderNum='+orderNum //数据接口
+
+                , page: false //开启分页
+                , cols: [[ //表头
+                    // {type: "checkbox", width: 50, fixed: "left", align: "center"}
+                    {type: 'numbers', title: '序号', sort: true, width: 50, align: "center"}
+                    , {field: 'id', title: 'ID', width: 80, sort: true, align: "center", hide: true}
+                    , {field: 'partsName', title: '商品', align: "center"}
+                    , {field: 'partsPrice', title: '价格', align: "center"}
+                    , {field: 'num', title: '数量', align: "center"}
+                    , {field: 'total', title: '合计', align: "center"}
+                    // , {title: '操作', width: 150, templet: '#currentTableBar', fixed: "right", align: "center"}
+                ]],
+                limit: 10,
+                limits: [10, 20, 30],
+                response: {statusCode: 0},
+                parseData: function (res) {
+                    return {
+                        "code": 0, //解析接口状态
+                        "msg": "", //解析提示文本
+                        // "count": res.total, //解析数据长度
+                        "data": res //解析数据列表
+                    }
+                }
+            });
+
+        })
+    }
+</script>
+
+<script th:inline="none">
+    layui.use('table', function () {
+        var $ = layui.jquery;
+        var table = layui.table;
+        var id =$("#shopId").val();
+        $.ajax({
+            url:"getAllShop?id="+id,
+            success:function (res) {
+                $('input[name="shop"]').attr("value",res[0].shopName)
+            }
+        })
+        //添加新的配件类型
+        $("#surePass").on("click",function () {
+            var orderNum=$("#orderNum").val();
+            $.ajax({
+                url:"passOrder?orderNum="+orderNum,
+                success:function (res) {
+                    layer.alert(res.extend.msg)
+                }
+            })
+        })
+    });
+
+</script>
+</body>
+</html>

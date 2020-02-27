@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>测试页面</title>
+</head>
+<body>
+<!--    <form method="post" action="/saveShopInfo" enctype="multipart/form-data">-->
+<!--        <input type="text" name="id">-->
+<!--        <input type="text" name="shopName">-->
+<!--        <input type="text" name="shopAddress">-->
+<!--        <input type="text" name="shopPhone">-->
+<!--        <input type="file" name="shopImg">-->
+<!--        <input type="text" name="shopState">-->
+<!--        <input type="text" name="message">-->
+<!--        <input type="submit" value="注册">-->
+<!--    </form>-->
+    <form method="post" action="/saveParts" enctype="multipart/form-data">
+        <input type="file" name="partsImg">
+        <input type="text" name="partsTypeId">
+        <input type="text" name="produce">
+        <input type="text" name="partsName">
+        <input type="text" name="partsPrice">
+        <input type="text" name="partsDesc">
+        <input type="text" name="produce">
+        <input type="text" name="discount">
+        <input type="submit" value="试试">
+    </form>
+<form method="post" action="/updateParts" enctype="multipart/form-data">
+    <input type="text" name="id">
+    <input type="file" name="partsImg">
+    <input type="text" name="partsTypeId">
+    <input type="text" name="produce">
+    <input type="text" name="partsName">
+    <input type="text" name="partsPrice">
+    <input type="text" name="partsDesc">
+    <input type="text" name="produce">
+    <input type="text" name="discount">
+    <input type="submit" value="试试">
+</form>
+</body>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>汽车配件图片添加</title>
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+    <script src="/layui/layui.js"></script>
+</head>
+<body>
+<form class="layui-form" method="post" enctype="multipart/form-data" action="savePartsImg" >
+    <!--店铺名-->
+    <input name="id" hidden>
+    <input name="img" type="file">
+    <!--    店铺图片-->
+    <input type="submit" class="layui-btn" value="上传" id="btn">
+        <i class="layui-icon">&#xe67c;</i>上传图片
+    </input>
+</form>
+<script src="/layui/layui.js"></script>
+<script th:inline="none">
+    function child(data) {
+        layui.use(['form', 'layer'], function () {
+            var $ = layui.jquery;
+            var layer = layui.layer;
+            var form = layui.form;
+
+            console.log(data)
+            $('input[name="id"]').attr("value", data.id);
+            form.render();
+        })
+
+    }
+
+    layui.use(['layer'], function () {
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        // var form = layui.form;
+        // 监听修改用户提交
+        $("#btn").on("click", function () {
+            alert(6)
+            $.ajax({
+                type: "post",
+                url: "savePartsImg",
+                data: $("#t").serialize(),
+                success: function (res) {
+                    layer.msg(res.extend.msg);
+                    var index = parent.layer.getFrameIndex(window.name);
+                    setTimeout(function () {
+                        parent.layer.close(index);//关闭当前页
+                    }, 1000)
+                },
+                error: function () {
+                    layer.msg("出错了");
+                    var index = parent.layer.getFrameIndex(window.name);
+                    setTimeout(function () {
+                        parent.layer.close(index);//关闭当前页
+                    }, 1000)
+                }
+            })
+        });
+    });
+</script>
+</body>
+</html>

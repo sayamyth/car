@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>顾客信息表</title>
+    <link rel="stylesheet" href="/layui/css/layui.css" media="all">
+</head>
+<body>
+<input id="input1" style="width: 200px;height: 30px;margin-left: 50px" type="text" name="tiltle" placeholder="输入店铺名查询">
+<button id="selectByLike" class="layui-btn layui-btn-normal"><i class="layui-icon">&#xe615;</i>查找</button>
+
+
+<div class="layui-fluid">
+    <div class="layui-row">
+        <div class="layui-col-md3">
+            <img src="">
+            <p name="partsName"></p>
+            <p name="partsPrice"></p>
+            <p name="partsDesc"></p>
+        </div>
+    </div>
+</div>
+<!--此为上下翻页-->
+<div id="test1"></div>
+
+<script src="/layui/layui.js"></script>
+<script th:inline="none">
+    layui.use(['laypage', 'jquery'], function () {
+        var $ = layui.jquery;
+        var laypage = layui.laypage;
+        $.ajax({
+            url: "getPartsWithPageAndCondition",
+            success: function (res) {
+                for (var i = 0; i < res.records.length; i++){
+                    alert(res.records[i].id)
+                }
+            }
+        })
+
+        //执行一个laypage实例
+        laypage.render({
+            elem: 'test1' //注意，这里的 test1 是 ID，不用加 # 号
+            ,
+            count: 30 //数据总数，从服务端得到
+        });
+    });
+</script>
+</body>
+</html>
